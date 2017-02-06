@@ -6,5 +6,5 @@ defmodule ExSummary.Stopwords do
   def list, do: @stopwords
 
   @spec filter( binary ) :: binary
-  def filter( text ), do: IO.inspect( @stopword_re ) && String.replace( text, @stopword_re, "" ) 
+  def filter( text ), do: String.replace( text, @stopword_re, "" ) 
 end
