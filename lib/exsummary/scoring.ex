@@ -1,20 +1,16 @@
 defmodule ExSummary.Scoring do
   @spec word_score_map( map ) :: map
   def word_score_map( histogram ) when is_map( histogram ) do
-    #NOTE: histogram_total is being computed for each histogram entry. This can
-    #      be improved upon. (sr 2017-02-06)
+    total = histogram_total( histogram )
     for { word, frequency } <- histogram,
         into: %{}, 
-        do: { word, word_score( histogram, word ) }
+        do: { word, frequency / total }
   end
 
   @spec word_score( map, binary ) :: float
   def word_score( histogram, word ) do
-    if Map.has_key?( histogram, word ) do
-      histogram[word] / histogram_total( histogram )
-    else
-      0.0
-    end
+    total = histogram_total( histogram )
+    Map.get( histogram, word, 0 ) / total
   end
 
   defp histogram_total( histogram ) do
