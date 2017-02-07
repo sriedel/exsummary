@@ -5,19 +5,15 @@ defmodule ExSummary.Sentence do
   def split_into_sentences( text ) do
     ~r/(\S+)[.?!]\s+\p{Lu}/u
     |> Regex.scan( text, return: :index )
-    |> Enum.reduce( [], fn( match, acc ) ->
-      [ _, { previous_token_index, previous_token_length } ] = match
-      previous_token = binary_part( text, previous_token_index, previous_token_length )
+    |> Enum.reduce( [], fn( [ _, { prev_token_index, prev_token_length } ], acc ) ->
+      prev_token = binary_part( text, prev_token_index, prev_token_length )
 
-      if known_abbreviation?( previous_token ) do
-        acc
-      else
-        [ previous_token_index + previous_token_length + 1 | acc ]
-      end
-
+      [ { prev_token_index + prev_token_length + 1, prev_token } | acc ]
     end )
+    |> Enum.filter( fn( { _index, token } ) -> !known_abbreviation?( token ) end )
+    |> Enum.map( fn( { index, _token } ) -> index end ) 
     |> split_text_on_bytes( text, [] )
-    |> Enum.map( &( String.trim( &1 ) ) )
+    |> Enum.map( &String.trim/1 )
   end
 
   defp split_text_on_bytes( [], text, acc ), do: [ text | acc ]
