@@ -13,6 +13,12 @@ defmodule ExSummary.Scoring do
     Map.get( histogram, word, 0 ) / total
   end
 
+  @spec word_list_score( map, [binary] ) :: float
+  def word_list_score( word_score_map, list_of_words ) do
+    list_of_words
+    |> Enum.reduce( 0, &( &2 + Map.get( word_score_map, &1, 0 ) ) )
+  end
+
   defp histogram_total( histogram ) do
     Enum.reduce( histogram, 0, fn( {_,v}, acc ) -> v + acc end )
   end
