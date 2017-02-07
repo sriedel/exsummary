@@ -1,5 +1,5 @@
 defmodule ExSummary.Sentence do
-  @known_abbreviations [ "us" ]
+  @known_abbreviations MapSet.new( [ "us" ] )
 
   @spec split_into_sentences( binary ) :: [ binary ]
   def split_into_sentences( text ) do
@@ -35,7 +35,7 @@ defmodule ExSummary.Sentence do
     normalized_word = word
                       |> String.replace( ~r/\W/, "" ) 
                       |> String.downcase
-    Enum.member?( @known_abbreviations, normalized_word )
+    MapSet.member?( @known_abbreviations, normalized_word )
   end
 
 end
