@@ -4,9 +4,13 @@ defmodule ExSummary.WordFrequency do
     text
     |> valid_word_list
     |> Enum.reduce( %{}, fn( word, histogram ) ->
-      {_, histogram} = Map.get_and_update( histogram, word, &( { &1, (&1||0) + 1 } ) ) 
+      {_, histogram} = Map.get_and_update( histogram, word, &update_word_frequency/1 ) 
       histogram
     end )
+  end
+
+  defp update_word_frequency( previous_value ) do
+    { previous_value, ( previous_value || 0 ) + 1 }
   end
 
   defp is_valid_word?( word ) do
@@ -16,6 +20,6 @@ defmodule ExSummary.WordFrequency do
   defp valid_word_list( text ) do
     text 
     |> String.split( ~r/\s*(\b|[^\p{Xan}])\s*/ )
-    |> Enum.filter( &( is_valid_word?( &1 ) ) )
+    |> Enum.filter( &is_valid_word?/1 )
   end
 end
