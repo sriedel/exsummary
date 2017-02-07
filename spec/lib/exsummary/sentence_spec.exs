@@ -6,7 +6,7 @@ defmodule ExSummary.SentenceSpec do
       let :text, do: "this is a text without punctuation"
 
       it "should return a list of one element containing the input text" do
-        expect ExSummary.Sentence.split_into_sentences( text() ) |> to eq( [ text() ] )
+        expect ExSummary.Sentence.split_into_sentences( text() ) |> to( eq [ text() ] )
       end
     end
 
@@ -14,7 +14,7 @@ defmodule ExSummary.SentenceSpec do
       let :text, do: "this is a text with a period at the end."
 
       it "should return a list of one element containing the input text" do
-        expect ExSummary.Sentence.split_into_sentences( text() ) |> to eq( [ text() ] )
+        expect ExSummary.Sentence.split_into_sentences( text() ) |> to( eq [ text() ] )
       end
     end
 
@@ -22,7 +22,7 @@ defmodule ExSummary.SentenceSpec do
       let :text, do: "this is a text with an exclamation mark at the end!"
 
       it "should return a list of one element containing the input text" do
-        expect ExSummary.Sentence.split_into_sentences( text() ) |> to eq( [ text() ] )
+        expect ExSummary.Sentence.split_into_sentences( text() ) |> to( eq [ text() ] )
       end
     end
 
@@ -30,7 +30,7 @@ defmodule ExSummary.SentenceSpec do
       let :text, do: "is this a text with a question mark at the end?"
 
       it "should return a list of one element containing the input text" do
-        expect ExSummary.Sentence.split_into_sentences( text() ) |> to eq( [ text() ] )
+        expect ExSummary.Sentence.split_into_sentences( text() ) |> to( eq [ text() ] )
       end
     end
 
@@ -39,7 +39,7 @@ defmodule ExSummary.SentenceSpec do
         let :text, do: "The Trump administration argued the president has broad authority to decide who can and can’t enter the U.S. and that preventing him from doing so puts national security at risk, as it sought to persuade an appeals court to reinstate a travel ban."
 
         it "should not be counted as an end-of-sentence" do
-          expect ExSummary.Sentence.split_into_sentences( text() ) |> to eq( [ text() ] )
+          expect ExSummary.Sentence.split_into_sentences( text() ) |> to( eq [ text() ] )
         end
       end
 
@@ -50,7 +50,7 @@ defmodule ExSummary.SentenceSpec do
           let :text, do: Enum.join( [ sentence1(), sentence2() ], " " )
 
           it "should be counted as an end-of-sentence" do
-            expect ExSummary.Sentence.split_into_sentences( text() ) |> to eq( [ sentence1(), sentence2() ] )
+            expect ExSummary.Sentence.split_into_sentences( text() ) |> to( eq [ sentence1(), sentence2() ] )
           end
         end
 
@@ -58,7 +58,7 @@ defmodule ExSummary.SentenceSpec do
           let :text, do: "The Trump administration argued the president has broad authority to decide who can and can’t enter the ... and that preventing him from doing so puts national security at risk, as it sought to persuade an appeals court to reinstate a travel ban."
 
           it "should not be counted as an end-of-sentence" do
-            expect ExSummary.Sentence.split_into_sentences( text() ) |> to eq( [ text() ] )
+            expect ExSummary.Sentence.split_into_sentences( text() ) |> to( eq [ text() ] )
           end
         end
       end

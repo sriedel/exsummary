@@ -1,16 +1,15 @@
 defmodule ExSummary.Sentence do
-  @known_abbreviations [ "US" ]
-  @known_abbreviation_re_string "\\s*\\b(" <> Enum.join( @known_abbreviations, "|" ) <> ")\\b\\s*"
+  @known_abbreviations [ "us" ]
 
   @spec split_into_sentences( binary ) :: [ binary ]
   def split_into_sentences( text ) do
-    matching_indices = Regex.scan( ~r/(\S+)[.?!]\s+\p{Lu}/u, text, return: :index )
-    Enum.reduce( matching_indices, [], fn( match, acc ) ->
-      [ { match_index, _ }, { previous_token_index, previous_token_length } ] = match
+    ~r/(\S+)[.?!]\s+\p{Lu}/u
+    |> Regex.scan( text, return: :index )
+    |> Enum.reduce( [], fn( match, acc ) ->
+      [ _, { previous_token_index, previous_token_length } ] = match
       previous_token = binary_part( text, previous_token_index, previous_token_length )
-      stripped_token = String.replace( previous_token, ~r/\W/, "" )
 
-      if Enum.member?( @known_abbreviations, stripped_token ) do
+      if known_abbreviation?( previous_token ) do
         acc
       else
         [ previous_token_index + previous_token_length + 1 | acc ]
@@ -23,11 +22,24 @@ defmodule ExSummary.Sentence do
 
   defp split_text_on_bytes( [], text, acc ), do: [ text | acc ]
   defp split_text_on_bytes( [ index ], text, acc ) do
-    [ binary_part( text, 0, index ) | [ binary_part( text, index + 1, byte_size( text ) - index - 1 ) | acc ] ]
+    first_substring = binary_part( text, 0, index )
+    second_substring_length = byte_size( text ) - index - 1
+    second_substring = binary_part( text, index + 1, second_substring_length )
+
+    [ first_substring, second_substring | acc ]
   end
   defp split_text_on_bytes( [ index2, index1, rest ], text, acc ) do
-    split_text_on_bytes( [ index1 | rest ], text, [ binary_part( text, index1 + 1, index2 - index1 ) | acc ] ) 
-    
+    substring_length = index2 - index1
+    split_text_on_bytes( [ index1 | rest ], 
+                         text, 
+                         [ binary_part( text, index1 + 1, substring_length ) | acc ] ) 
+  end
+
+  defp known_abbreviation?( word ) do
+    normalized_word = word
+                      |> String.replace( ~r/\W/, "" ) 
+                      |> String.downcase
+    Enum.member?( @known_abbreviations, normalized_word )
   end
 
 end
