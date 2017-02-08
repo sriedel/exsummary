@@ -4,13 +4,13 @@ defmodule ExSummary.Scoring do
     total = histogram_total( histogram )
     for { word, frequency } <- histogram,
         into: %{}, 
-        do: { word, frequency / total }
+        do: { word, score( frequency, total ) }
   end
 
   @spec word_score( map, binary ) :: float
   def word_score( histogram, word ) do
     total = histogram_total( histogram )
-    Map.get( histogram, word, 0 ) / total
+    score( Map.get( histogram, word, 0 ), total )
   end
 
   @spec word_list_score( map, [binary] ) :: float
@@ -21,5 +21,10 @@ defmodule ExSummary.Scoring do
 
   defp histogram_total( histogram ) do
     Enum.reduce( histogram, 0, fn( {_,v}, acc ) -> v + acc end )
+  end
+
+  defp score( 0, _ ), do: 0
+  defp score( frequency, number_of_words ) do
+    -:math.log2( frequency / number_of_words )
   end
 end

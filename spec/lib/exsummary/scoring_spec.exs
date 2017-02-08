@@ -9,9 +9,9 @@ defmodule ExSummary.ScoringSpec do
                          "c" => 3/6 }
 
   describe ".word_score_map" do
-    let :expected_score_map, do: %{ "a" => 1/6,
-                                    "b" => 2/6,
-                                    "c" => 3/6 }
+    let :expected_score_map, do: %{ "a" => 2.584962500721156,
+                                    "b" => 1.5849625007211563,
+                                    "c" => 1.0 }
     it "should return a mapping of words to the word's score" do
       expect ExSummary.Scoring.word_score_map( histogram() ) |> to( eq expected_score_map() )
       
@@ -21,9 +21,9 @@ defmodule ExSummary.ScoringSpec do
   describe ".word_score" do
     context "when the queried word is part of the histogram" do
       it "should return the expected score for a word given a histogram" do
-        expect ExSummary.Scoring.word_score( histogram(), "a" ) |> to( eq (1.0/6.0) )
-        expect ExSummary.Scoring.word_score( histogram(), "b" ) |> to( eq (2.0/6.0) )
-        expect ExSummary.Scoring.word_score( histogram(), "c" ) |> to( eq (3.0/6.0) )
+        expect ExSummary.Scoring.word_score( histogram(), "a" ) |> to( eq 2.584962500721156 )
+        expect ExSummary.Scoring.word_score( histogram(), "b" ) |> to( eq 1.5849625007211563 )
+        expect ExSummary.Scoring.word_score( histogram(), "c" ) |> to( eq 1.0 )
       end
     end
 
