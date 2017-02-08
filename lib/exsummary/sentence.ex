@@ -24,7 +24,16 @@ defmodule ExSummary.Sentence do
 
     [ first_substring, second_substring | acc ]
   end
-  defp split_text_on_bytes( [ index2, index1, rest ], text, acc ) do
+  defp split_text_on_bytes( [ index2, index1 ], text, acc ) do
+    first_substring = binary_part( text, 0, index1 )
+    second_substring_length = index2 - index1 - 1
+    second_substring = binary_part( text, index1 + 1, second_substring_length )
+    third_substring_length = byte_size( text ) - index2 - 1
+    third_substring = binary_part( text, index2 + 1, third_substring_length )
+
+    [ first_substring, second_substring, third_substring | acc ]
+  end
+  defp split_text_on_bytes( [ index2, index1 | rest ], text, acc ) do
     substring_length = index2 - index1
     split_text_on_bytes( [ index1 | rest ], 
                          text, 
