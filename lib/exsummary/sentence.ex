@@ -25,10 +25,10 @@ defmodule ExSummary.Sentence do
     [ first_substring, second_substring | acc ]
   end
   defp split_text_on_bytes( [ index2, index1 | rest ], text, acc ) do
-    substring_length = index2 - index1
+    substring_length = byte_size( text ) - index2 - 1
     split_text_on_bytes( [ index1 | rest ], 
-                         binary_part( text, 0, index2 ),
-                         [ binary_part( text, index1 + 1, substring_length ) | acc ] ) 
+                         binary_part( text, 0, index2 ) |> IO.inspect,
+                         [ binary_part( text, index2 + 1, substring_length ) |> IO.inspect | acc ] ) 
   end
 
   defp known_abbreviation?( word ) do
