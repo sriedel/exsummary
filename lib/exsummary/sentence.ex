@@ -17,18 +17,11 @@ defmodule ExSummary.Sentence do
   end
 
   defp split_text_on_bytes( [], text, acc ), do: [ text | acc ]
-  defp split_text_on_bytes( [ index ], text, acc ) do
-    first_substring = binary_part( text, 0, index )
-    second_substring_length = byte_size( text ) - index - 1
-    second_substring = binary_part( text, index + 1, second_substring_length )
-
-    [ first_substring, second_substring | acc ]
-  end
-  defp split_text_on_bytes( [ index2, index1 | rest ], text, acc ) do
-    substring_length = byte_size( text ) - index2 - 1
-    split_text_on_bytes( [ index1 | rest ], 
-                         binary_part( text, 0, index2 ) |> IO.inspect,
-                         [ binary_part( text, index2 + 1, substring_length ) |> IO.inspect | acc ] ) 
+  defp split_text_on_bytes( [ index | rest ], text, acc ) do
+    substring_length = byte_size( text ) - index - 1
+    split_text_on_bytes( rest, 
+                         binary_part( text, 0, index ),
+                         [ binary_part( text, index + 1, substring_length ) | acc ] ) 
   end
 
   defp known_abbreviation?( word ) do
