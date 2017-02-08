@@ -63,5 +63,31 @@ defmodule ExSummary.SentenceSpec do
         end
       end
     end
+
+    it "can separate one sentence appropriately" do
+      sentence = "I am foo."
+      expect ExSummary.Sentence.split_into_sentences( sentence ) |> to( eq [ sentence ] )
+    end
+
+    it "can separate two sentences appropriately" do
+      sentence = "I am foo."
+      sentences = [ sentence, sentence ]
+      text = Enum.join( sentences, " " )
+      expect ExSummary.Sentence.split_into_sentences( text ) |> to( eq sentences )
+    end
+
+    it "can separate three sentences appropriately" do
+      sentence = "I am foo."
+      sentences = [ sentence, sentence, sentence ]
+      text = Enum.join( sentences, " " )
+      expect ExSummary.Sentence.split_into_sentences( text ) |> to( eq sentences )
+    end
+
+    it "can separate four (and more) sentences appropriately" do
+      sentence = "I am foo."
+      sentences = [ sentence, sentence, sentence, sentence ]
+      text = Enum.join( sentences, " " )
+      expect ExSummary.Sentence.split_into_sentences( text ) |> to( eq sentences )
+    end
   end
 end
