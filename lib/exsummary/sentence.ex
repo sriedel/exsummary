@@ -18,10 +18,10 @@ defmodule ExSummary.Sentence do
 
   defp split_text_on_bytes( [], text, acc ), do: [ text | acc ]
   defp split_text_on_bytes( [ index | rest ], text, acc ) do
-    substring_length = byte_size( text ) - index - 1
+    substring_length = byte_size( text ) - index
     split_text_on_bytes( rest, 
                          binary_part( text, 0, index ),
-                         [ binary_part( text, index + 1, substring_length ) | acc ] ) 
+                         [ binary_part( text, index, substring_length ) | acc ] ) 
   end
 
   defp known_abbreviation?( word ) do
