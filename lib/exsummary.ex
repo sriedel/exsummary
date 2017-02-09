@@ -2,8 +2,9 @@ defmodule ExSummary do
   @moduledoc """
   """
 
-  @spec summarize( binary ) :: binary
-  def summarize( text ) do
+  @spec summarize( binary, pos_integer ) :: binary
+  def summarize( text, number_of_sentences ) when is_integer( number_of_sentences ) 
+                                              and number_of_sentences > 0 do
     full_sentences = ExSummary.Sentence.split_into_sentences( text )
 
     stemmed_sentences = full_sentences
@@ -25,7 +26,7 @@ defmodule ExSummary do
     sentence_scores_with_position = Enum.zip( [ 1..length( sentence_scores ), sentence_scores, full_sentences ] )
     sentence_scores_with_position 
     |> Enum.sort_by( fn( { _pos, score, _sentence } ) -> score end, &>=/2 )
-    |> Enum.take( 2 )
+    |> Enum.take( number_of_sentences )
     |> Enum.sort_by( fn( { pos, _score, _sentence } ) -> pos end )
     |> Enum.map( fn( { _pos, _score, sentence } ) -> sentence end )
     |> Enum.join( " " )
