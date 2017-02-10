@@ -2,6 +2,24 @@ defmodule ExSummary.Segmentation do
   alias ExSummary.Abbreviations
 
   @doc """
+    Segments the given text into a list of lists of strings. The first order
+    lists represent sentences, and the second order lists the words within these
+    sentences. The words have been normalized (but not stemmed or filtered).
+  """
+  @spec segment( binary ) :: [ [ binary ] ]
+  def segment( text ) do
+    text
+    |> sentence_segmentation
+    |> Enum.map( &normalize_sentence/1 )
+  end
+
+  defp normalize_sentence( sentence ) do
+    sentence 
+    |> word_segmentation
+    |> Enum.map( &normalize_word/1 )
+  end
+
+  @doc """
     Segments the given text into a list of sentences.
   """
   @spec sentence_segmentation( binary ) :: [ binary ]

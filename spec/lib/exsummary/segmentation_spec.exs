@@ -1,5 +1,17 @@
 defmodule ExSummary.SegmentationSpec do
   use ESpec
+  describe ".segment" do
+    let :text, do: "The Trump administration argued the president has broad authority to decide who can and can’t enter the U.S. and that preventing him from doing so puts national security at risk, as it sought to persuade an appeals court to reinstate a travel ban. The Trump administration argued the president has broad authority to decide who can and can’t enter the here. This puts national security at risk, as it sought to persuade an appeals court to reinstate a travel ban."
+    let :expected, do: [
+      ~w[ the trump administration argued the president has broad authority to decide who can and can't enter the us and that preventing him from doing so puts national security at risk as it sought to persuade an appeals court to reinstate a travel ban ],
+      ~w[ the trump administration argued the president has broad authority to decide who can and can't enter the here ],
+      ~w[ this puts national security at risk as it sought to persuade an appeals court to reinstate a travel ban ]
+    ]
+
+    it "should return a list of sentences which in turn are lists of normalized words" do
+      expect ExSummary.Segmentation.segment( text() ) |> to( eq expected() )
+    end
+  end
 
   describe ".sentence_segmentation" do
     context "if the text has no punctuation" do
