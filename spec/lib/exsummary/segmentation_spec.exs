@@ -1,6 +1,12 @@
 defmodule ExSummary.SegmentationSpec do
   use ESpec
 
+  describe ".word_segmentation" do
+    context "it should split words on word boundaries and remove leading and training space" do
+      expect ExSummary.Segmentation.word_segmentation( "   foo Bar (baz)  quux  " ) |> to( eq [ "foo", "Bar", "(baz)", "quux" ] )
+    end
+  end
+
   describe ".normalize_word" do
     context "a word that doesn't need processing" do
       it "will be returned as given" do

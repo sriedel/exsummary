@@ -1,5 +1,15 @@
 defmodule ExSummary.Segmentation do
   @doc """
+    Segments the given text into a list of words.
+  """
+  @spec word_segmentation( binary ) :: [ binary ]
+  def word_segmentation( text ) do
+    text
+    |> String.trim
+    |> String.split( ~r/\s+\b|\b\s+/ )
+  end
+
+  @doc """
     Normalizes the given word into a form that can be processed by the stopword
     and scoring logic.
 
