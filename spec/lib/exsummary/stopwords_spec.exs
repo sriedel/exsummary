@@ -8,9 +8,9 @@ defmodule ExSummary.StopwordsSpec do
   end
 
   describe ".filter" do
-    it "should remove all occurrances of the stopwords from the given text" do
-      raw_text = "i am on. it is nice. i am off."
-      expected_result = ". nice. ."
+    it "should remove all occurrances of the stopwords from the given word list" do
+      raw_text = ~w[ i am on it is nice i am off ]
+      expected_result = ~w[ nice ]
       expect ExSummary.Stopwords.filter( raw_text ) |> to( eq expected_result )
     end
   end
