@@ -1,5 +1,5 @@
 defmodule ExSummary.Segmentation do
-  @known_abbreviations MapSet.new( [ "us" ] )
+  alias ExSummary.Abbreviations
 
   @doc """
     Segments the given text into a list of sentences.
@@ -13,7 +13,9 @@ defmodule ExSummary.Segmentation do
 
       [ { prev_token_index + prev_token_length + 1, prev_token } | acc ]
     end )
-    |> Enum.filter( fn( { _index, token } ) -> !known_abbreviation?( token ) end )
+    |> Enum.filter( fn( { _index, token } ) -> 
+         !Abbreviations.is_known_abbreviation?( token ) 
+       end )
     |> Enum.map( fn( { index, _token } ) -> index end ) 
     |> split_text_on_bytes( text, [] )
     |> Enum.map( &String.trim/1 )
@@ -24,13 +26,6 @@ defmodule ExSummary.Segmentation do
     split_text_on_bytes( rest, 
                          binary_part( text, 0, index ),
                          [ binary_part( text, index, substring_length ) | acc ] ) 
-  end
-
-  defp known_abbreviation?( word ) do
-    normalized_word = word
-                      |> String.replace( ~r/\W/, "" ) 
-                      |> String.downcase
-    MapSet.member?( @known_abbreviations, normalized_word )
   end
 
   @doc """
