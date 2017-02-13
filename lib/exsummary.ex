@@ -15,39 +15,37 @@ defmodule ExSummary do
     |> Enum.join( " " )
   end
 
-  defp stem_text( text ) do
-    text
-    |> String.split
+  defp stem_word_list( word_list ) do
+    word_list
+    |> ExSummary.Stopwords.filter
     |> Enum.map( &Porter2.stem/1 )
-    |> Enum.join( " " )
   end
 
-  defp score_sentences( word_scores, sentences ) do
-    sentences
-    |> Enum.map( &String.split/1 )
+  defp stem_sentences( text ) do
+    text
+    |> ExSummary.Segmentation.segment
+    |> Enum.map( &stem_word_list/1 )
+  end
+
+  defp build_word_score_map( stemmed_sentences ) do
+    word_scores = stemmed_sentences
+                  |> Enum.flat_map( &(&1) )
+                  |> ExSummary.WordFrequency.histogram
+                  |> ExSummary.Scoring.word_score_map
+  end
+
+  defp score_stemmed_sentences( stemmed_sentences, word_scores ) do
+    stemmed_sentences
     |> Enum.map( &( ExSummary.Scoring.word_list_score( word_scores, &1 ) ) )
   end
 
-  defp score_words( text ) do
-    text 
-    |> ExSummary.WordFrequency.histogram
-    |> ExSummary.Scoring.word_score_map
-  end
-
-  defp stem_sentences( sentence_list ) do
-    sentence_list
-    |> Enum.map( &ExSummary.Stopwords.filter/1 )
-    |> Enum.map( &stem_text/1 )
-  end
-
   defp score_sentences_in_text( text ) do
-    full_sentences = ExSummary.Sentence.split_into_sentences( text )
-    stemmed_sentences = stem_sentences( full_sentences )
+    full_sentences = ExSummary.Segmentation.sentence_segmentation( text )
+    stemmed_sentences = stem_sentences( text )
 
-    sentence_scores = stemmed_sentences
-                      |> Enum.join( " " )
-                      |> score_words
-                      |> score_sentences( stemmed_sentences )
+    word_scores = build_word_score_map( stemmed_sentences )
+
+    sentence_scores = score_stemmed_sentences( stemmed_sentences, word_scores )
 
     Enum.zip( [ 1..length( sentence_scores ), sentence_scores, full_sentences ] )
   end
