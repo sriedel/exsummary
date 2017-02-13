@@ -1,8 +1,16 @@
 defmodule ExSummary.WordFrequency do
   @spec histogram( binary ) :: map
-  def histogram( text ) do
+  def histogram( text ) when is_binary( text ) do
     text
     |> valid_word_list
+    |> Enum.reduce( %{}, fn( word, histogram ) ->
+      {_, histogram} = Map.get_and_update( histogram, word, &update_word_frequency/1 ) 
+      histogram
+    end )
+  end
+
+  def histogram( word_list ) when is_list( word_list ) do
+    word_list
     |> Enum.reduce( %{}, fn( word, histogram ) ->
       {_, histogram} = Map.get_and_update( histogram, word, &update_word_frequency/1 ) 
       histogram
